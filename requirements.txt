@@ -1,5 +1,5 @@
-tensorflow-gpu
+tensorflow
 keras 
 numpy 
-skimage 
+scikit-image 
 matplotlib

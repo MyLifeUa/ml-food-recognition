@@ -5,11 +5,10 @@ from skimage.transform import resize
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.image as img
 import collections
 
 import urllib.request
-
-model = load_model(filepath='./model.hdf5')
 
 def center_crop(x, center_crop_size, **kwargs):
     centerw, centerh = x.shape[0]//2, x.shape[1]//2
@@ -59,8 +58,8 @@ def predict_10_crop(img, ix, top_n=5, plot=False, preprocess=True, debug=False):
         print('True Label:', y_test[ix])
     return preds, top_n_preds
 
-def predict(img, top_n=5, debug=False):
-    resized_img = np.resize(img, (1, 150, 150, 3))
+def predict(img, model, top_n=5, debug=False):
+    resized_img = np.resize(img, (1, 244, 244, 3))
     y_pred = model.predict(np.array(resized_img))
     preds = np.argmax(y_pred, axis=1)
     top_n_preds= np.argpartition(y_pred, -top_n)[:,-top_n:]
@@ -69,13 +68,32 @@ def predict(img, top_n=5, debug=False):
         print('Top-5 Predicted:', top_n_preds)
     return preds, top_n_preds
 
-def predict_remote_image(url='http://themodelhouse.tv/wp-content/uploads/2016/08/hummus.jpg', debug=False):
+def predict_remote_image(url, model, ix_to_class, debug=False):
     with urllib.request.urlopen(url) as f:
         pic = plt.imread(f, format='jpg')
-        preds = predict(np.array(pic), 0, debug=debug)[0]
+        preds = predict(np.array(pic), model, 0, debug=debug)[0]
         best_pred = collections.Counter(preds).most_common(1)[0][0]
-        # print(ix_to_class[best_pred])
+        print(ix_to_class[best_pred])
         # plt.imshow(pic)
 
-predict_remote_image(url='https://lmld.org/wp-content/uploads/2012/07/Chocolate-Ice-Cream-3.jpg', debug=True)
-predict_remote_image(url='https://images-gmi-pmc.edge-generalmills.com/75593ed5-420b-4782-8eae-56bdfbc2586b.jpg', debug=True)
+def predict_image(path, model, ix_to_class, debug=False):
+    pic = img.imread(path)
+    preds = predict(np.array(pic), model, 0, debug=debug)[0]
+    best_pred = collections.Counter(preds).most_common(1)[0][0]
+    print(ix_to_class[best_pred])
+
+model = load_model(filepath='./model.2.hdf5')
+
+class_to_ix = {}
+ix_to_class = {}
+with open('food-5/meta/classes.txt', 'r') as txt:
+    classes = [l.strip() for l in txt.readlines()]
+    class_to_ix = dict(zip(classes, range(len(classes))))
+    ix_to_class = dict(zip(range(len(classes)), classes))
+    class_to_ix = {v: k for k, v in ix_to_class.items()}
+sorted_class_to_ix = collections.OrderedDict(sorted(class_to_ix.items()))
+
+# predict_remote_image(url='https://lmld.org/wp-content/uploads/2012/07/Chocolate-Ice-Cream-3.jpg', model=model, ix_to_class=ix_to_class, debug=True)
+# predict_remote_image(url='https://images-gmi-pmc.edge-generalmills.com/75593ed5-420b-4782-8eae-56bdfbc2586b.jpg', model=model, ix_to_class=ix_to_class, debug=True)
+predict_image(path='food-5/images/apple_pie/98352.jpg', model=model, ix_to_class=ix_to_class, debug=True)
+predict_image(path='food-5/images/ice_cream/ice_cream/988684.jpg', model=model, ix_to_class=ix_to_class, debug=True)

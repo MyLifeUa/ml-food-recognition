@@ -6,7 +6,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPool2D, Flatten, Dense, InputLayer, BatchNormalization, Dropout
 from tensorflow.keras.optimizers import RMSprop
 from tensorflow.keras.callbacks import ModelCheckpoint
-from tensorflow.keras.applications import ResNet50
+from tensorflow.keras.applications import VGG16
 from tensorflow.keras.utils import to_categorical
 
 import matplotlib.pyplot as plt
@@ -49,43 +49,34 @@ test_generator = test_datagen.flow_from_directory(test_dir,
                                                   target_size=(244, 244))
 
 # import pretrained model
-pretrained_model = ResNet50(
-    weights = 'imagenet',include_top = False,
-    input_tensor = img, input_shape = None, pooling = 'avg')
+pretrained_model = VGG16(weights = 'imagenet',include_top = False)
 
 pretrained_model.summary()
 
-# build a sequential model
-model = Sequential()
-model.add(InputLayer(input_shape=(244, 244, 3)))
+# extract train and val features
+pretrained_features_train = pretrained_model.predict(train_generator)
+pretrained_features_test = pretrained_model.predict(test_generator)
 
-# 1st conv block
-model.add(Conv2D(25, (5, 5), activation='relu', strides=(1, 1), padding='same'))
-model.add(MaxPool2D(pool_size=(2, 2), padding='same'))
-# 2nd conv block
-model.add(Conv2D(50, (5, 5), activation='relu', strides=(2, 2), padding='same'))
-model.add(MaxPool2D(pool_size=(2, 2), padding='same'))
-model.add(BatchNormalization())
-# 3rd conv block
-model.add(Conv2D(70, (3, 3), activation='relu', strides=(2, 2), padding='same'))
-model.add(MaxPool2D(pool_size=(2, 2), padding='valid'))
-model.add(BatchNormalization())
-# ANN block
-model.add(Flatten())
-model.add(Dense(units=100, activation='relu'))
-model.add(Dense(units=100, activation='relu'))
-model.add(Dropout(0.25))
-# output layer
-class_num = 5
-model.add(Dense(units=class_num, activation='softmax'))
+# OHE target column
+train_target = to_categorical(train_generator.labels)
+test_target = to_categorical(test_generator.labels)
 
-# compile model
-model.compile(loss='categorical_crossentropy', optimizer="adam", metrics=['accuracy'])
+model2 = Sequential()
+model2.add(Flatten(input_shape=(7,7,512)))
+model2.add(Dense(100, activation='relu'))
+model2.add(Dropout(0.5))
+model2.add(BatchNormalization())
+model2.add(Dense(10, activation='softmax'))
 
-checkpointer = ModelCheckpoint(filepath='model.2.hdf5', verbose=1, save_best_only=True)
+# compile the model
+model2.compile(optimizer='adam', metrics=['accuracy'], loss='categorical_crossentropy')
 
-# fit on data for 30 epochs
-model.fit(train_generator, epochs=30, validation_data=test_generator, callbacks=[checkpointer])
+model2.summary()
+
+checkpointer = ModelCheckpoint(filepath='model.3.hdf5', verbose=1, save_best_only=True)
+
+# train model using features generated from VGG16 model
+model2.fit(pretrained_features_train, train_target, epochs=50, batch_size=128, validation_data=(pretrained_features_test, test_target), callbacks=[checkpointer])
 
 predict_remote_image(url='https://lmld.org/wp-content/uploads/2012/07/Chocolate-Ice-Cream-3.jpg', model=model, ix_to_class=ix_to_class, debug=True)
 predict_remote_image(url='https://images-gmi-pmc.edge-generalmills.com/75593ed5-420b-4782-8eae-56bdfbc2586b.jpg', model=model, ix_to_class=ix_to_class, debug=True)

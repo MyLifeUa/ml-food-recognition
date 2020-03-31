@@ -36,14 +36,14 @@ test_datagen = ImageDataGenerator(rescale=1.0/255.)
 
 # flow train images in batches of 20 using train_datagen
 train_generator = train_datagen.flow_from_directory(train_dir,
-                                                    batch_size=128,
+                                                    batch_size=32,
                                                     class_mode='categorical',
                                                     shuffle=False,
                                                     target_size=(244, 244))
 
 # flow validation images in batches of 20 using train_datagen 
 test_generator = test_datagen.flow_from_directory(test_dir,
-                                                  batch_size=128,
+                                                  batch_size=32,
                                                   class_mode='categorical',
                                                   shuffle=False,
                                                   target_size=(244, 244))
@@ -76,7 +76,7 @@ model2.summary()
 checkpointer = ModelCheckpoint(filepath='model.3.hdf5', verbose=1, save_best_only=True)
 
 # train model using features generated from VGG16 model
-model2.fit(pretrained_features_train, train_target, epochs=50, batch_size=128, validation_data=(pretrained_features_test, test_target), callbacks=[checkpointer])
+model2.fit(pretrained_features_train, train_target, epochs=50, batch_size=32, validation_data=(pretrained_features_test, test_target), callbacks=[checkpointer])
 
 predict_remote_image(url='https://lmld.org/wp-content/uploads/2012/07/Chocolate-Ice-Cream-3.jpg', model=model, ix_to_class=ix_to_class, debug=True)
 predict_remote_image(url='https://images-gmi-pmc.edge-generalmills.com/75593ed5-420b-4782-8eae-56bdfbc2586b.jpg', model=model, ix_to_class=ix_to_class, debug=True)

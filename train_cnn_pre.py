@@ -36,14 +36,14 @@ test_datagen = ImageDataGenerator(rescale=1.0/255.)
 
 # flow train images in batches of 20 using train_datagen
 train_generator = train_datagen.flow_from_directory(train_dir,
-                                                    batch_size=32,
+                                                    batch_size=64,
                                                     class_mode='categorical',
                                                     shuffle=False,
                                                     target_size=(244, 244))
 
 # flow validation images in batches of 20 using train_datagen 
 test_generator = test_datagen.flow_from_directory(test_dir,
-                                                  batch_size=32,
+                                                  batch_size=64,
                                                   class_mode='categorical',
                                                   shuffle=False,
                                                   target_size=(244, 244))
@@ -62,7 +62,7 @@ train_target = to_categorical(train_generator.labels)
 test_target = to_categorical(test_generator.labels)
 
 model2 = Sequential()
-model2.add(Flatten(input_shape=(7,7,512)))
+model2.add(Flatten(input_shape=(244, 244, 3)))
 model2.add(Dense(100, activation='relu'))
 model2.add(Dropout(0.5))
 model2.add(BatchNormalization())
@@ -76,7 +76,7 @@ model2.summary()
 checkpointer = ModelCheckpoint(filepath='model.3.hdf5', verbose=1, save_best_only=True)
 
 # train model using features generated from VGG16 model
-model2.fit(pretrained_features_train, train_target, epochs=50, batch_size=32, validation_data=(pretrained_features_test, test_target), callbacks=[checkpointer])
+model2.fit(pretrained_features_train, train_target, epochs=50, batch_size=16, validation_data=(pretrained_features_test, test_target), callbacks=[checkpointer])
 
 predict_remote_image(url='https://lmld.org/wp-content/uploads/2012/07/Chocolate-Ice-Cream-3.jpg', model=model, ix_to_class=ix_to_class, debug=True)
 predict_remote_image(url='https://images-gmi-pmc.edge-generalmills.com/75593ed5-420b-4782-8eae-56bdfbc2586b.jpg', model=model, ix_to_class=ix_to_class, debug=True)

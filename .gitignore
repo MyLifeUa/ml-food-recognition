@@ -14,7 +14,7 @@ datasets/*
 
 __pycache__/      
 
-cache/*
+.cache/*
 .keras/*
 .config/*
 .local/*

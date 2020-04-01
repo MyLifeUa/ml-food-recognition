@@ -36,14 +36,14 @@ test_datagen = ImageDataGenerator(rescale=1.0/255.)
 
 # flow train images in batches of 20 using train_datagen
 train_generator = train_datagen.flow_from_directory(train_dir,
-                                                    batch_size=64,
+                                                    batch_size=16,
                                                     class_mode='categorical',
                                                     shuffle=False,
                                                     target_size=(244, 244))
 
 # flow validation images in batches of 20 using train_datagen 
 test_generator = test_datagen.flow_from_directory(test_dir,
-                                                  batch_size=64,
+                                                  batch_size=16,
                                                   class_mode='categorical',
                                                   shuffle=False,
                                                   target_size=(244, 244))
@@ -54,7 +54,9 @@ pretrained_model = VGG16(weights = 'imagenet',include_top = False)
 pretrained_model.summary()
 
 # extract train and val features
+print('Extracting train features...')
 pretrained_features_train = pretrained_model.predict(train_generator)
+print('Extracting test features...')
 pretrained_features_test = pretrained_model.predict(test_generator)
 
 # OHE target column
@@ -62,11 +64,12 @@ train_target = to_categorical(train_generator.labels)
 test_target = to_categorical(test_generator.labels)
 
 model2 = Sequential()
-model2.add(Flatten(input_shape=(244, 244, 3)))
+model2.add(Flatten(input_shape=(7, 7, 512)))
 model2.add(Dense(100, activation='relu'))
 model2.add(Dropout(0.5))
 model2.add(BatchNormalization())
-model2.add(Dense(10, activation='softmax'))
+class_num = 5
+model2.add(Dense(class_nuclass_num, activation='softmax'))
 
 # compile the model
 model2.compile(optimizer='adam', metrics=['accuracy'], loss='categorical_crossentropy')

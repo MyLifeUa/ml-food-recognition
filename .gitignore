@@ -9,3 +9,5 @@ model*
 *.tar.gz
 
 .ipynb_checkpoints/
+
+datasets/*

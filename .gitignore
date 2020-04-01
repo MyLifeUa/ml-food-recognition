@@ -14,9 +14,9 @@ datasets/*
 
 __pycache__/      
 
-cache/
-.keras/ 
-.config/ 
-.local/  
-.bash_history  
-.python_history 
+cache/*
+.keras/*
+.config/*
+.local/*
+.bash_history*
+.python_history*

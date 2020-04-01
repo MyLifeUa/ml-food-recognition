@@ -6,3 +6,5 @@ model*
 *data/
 
 *.zip
+
+.ipynb_checkpoints/

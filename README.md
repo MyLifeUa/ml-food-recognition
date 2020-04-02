@@ -1,4 +1,12 @@
 
+# Food Recognition Module
+
+We will be using YOLO Darkflow for this.
+
+## Instructions
+
+
+
 ## Links
 
 https://www.analyticsvidhya.com/blog/2020/02/learn-image-classification-cnn-convolutional-neural-networks-3-datasets/
@@ -11,9 +19,7 @@ https://www.kaggle.com/kanncaa1/deep-learning-tutorial-for-beginners
 
 wget http://data.vision.ee.ethz.ch/cvl/food-101.tar.gz
 
-## Instructions
-
-### Install nvidia docker support
+### Install nvidia docker support (not working)
 
 [Instructions](https://askubuntu.com/questions/799184/how-can-i-install-cuda-on-ubuntu-16-04)
 

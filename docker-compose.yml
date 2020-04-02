@@ -4,3 +4,5 @@ services:
   darkflow:
     build: 
       context: ./darkflow/
+    ports:
+      - 5000:5000

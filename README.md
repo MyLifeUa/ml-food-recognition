@@ -10,7 +10,8 @@ Simply run:
 docker-compose up
 ```
 
-A test command will be run automatically to indentify some test images
+A test command will be run automatically to indentify images you pass through URL:
+`http://0.0.0.0:5000/predict/?url=https://media-cdn.tripadvisor.com/media/photo-s/17/ba/a6/31/burger.jpg`
 
 ## Links
 

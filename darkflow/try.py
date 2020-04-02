@@ -41,10 +41,12 @@ imgcv = cv2.imread("images/lasanha.jpg")
 result = tfnet.return_predict(imgcv)
 print(result)
 
-# import urllib.request
+import urllib.request
 
-# with urllib.request.urlopen('https://prod-wolt-venue-images-cdn.wolt.com/5dd153c99b5fe61fc520c3b7/d3fb2ea1e7451fe43a2ee6ccff4b531f') as f:
-#     print('alive')
-#     imgcv = cv2.imread(f)
-#     result = tfnet.return_predict(imgcv)
-#     print(result)
+with urllib.request.urlopen('https://prod-wolt-venue-images-cdn.wolt.com/5dd153c99b5fe61fc520c3b7/d3fb2ea1e7451fe43a2ee6ccff4b531f') as url:
+    with open('/tmp/temp.jpg', 'wb') as f:
+        f.write(url.read())
+
+imgcv = cv2.imread('/tmp/temp.jpg')
+result = tfnet.return_predict(imgcv)
+print(result)

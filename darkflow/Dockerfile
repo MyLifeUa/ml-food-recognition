@@ -1,8 +1,7 @@
-FROM tensorflow/tensorflow:1.5.0
+FROM tensorflow/tensorflow:1.5.0-py3
 
 RUN apt-get update && apt-get install -y \
     python-pip \
-    cython \
     git \
     libsm6 \
     libxext6 \
@@ -11,6 +10,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN pip install --upgrade pip
 RUN pip install opencv-python
+RUN pip install cython
 
 RUN cd "/" && \
     git clone https://github.com/thtrieu/darkflow.git &&\
@@ -22,4 +22,8 @@ COPY . /data/
 
 WORKDIR /data
 
-CMD python try.py
+RUN pip install -r requirements.txt
+
+EXPOSE 5000
+
+CMD python3 flask_server.py

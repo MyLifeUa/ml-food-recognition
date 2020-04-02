@@ -20,3 +20,10 @@ __pycache__/
 .local/*
 .bash_history*
 .python_history*
+
+yololabels/*
+sample_img/*
+labels/
+yolo/images/
+ckpt/
+bin/

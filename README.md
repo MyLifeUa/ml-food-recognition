@@ -5,7 +5,12 @@ We will be using YOLO Darkflow for this.
 
 ## Instructions
 
+Simply run:
+```
+docker-compose up
+```
 
+A test command will be run automatically to indentify some test images
 
 ## Links
 

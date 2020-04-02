@@ -21,3 +21,5 @@ RUN cd "/" && \
 COPY . /data/
 
 WORKDIR /data
+
+CMD python try.py

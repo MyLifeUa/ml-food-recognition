@@ -1,0 +1,4 @@
+./darknet detector test /data/food100.data /data/yolov2-food100.cfg /data/yolov2-food100.weights /data/images/1/1.jpg
+
+xhost local:docker
+docker run -it --rm -v $PWD:/data --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" jota/darknet:latest bash

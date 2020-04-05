@@ -12,7 +12,7 @@ options = {"model": "/data/yolov2-food100.cfg", "load": "/data/yolov2-food100.we
 
 tfnet = TFNet(options)
 
-@app.route('/predict/')
+@app.route('/predict')
 def predict():
     url_path = request.args.get('url')
     with urllib.request.urlopen(url_path) as url:

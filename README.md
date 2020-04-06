@@ -11,10 +11,14 @@ docker-compose up
 ```
 
 A test command will be run automatically to indentify images you pass through URL:
-`http://0.0.0.0:5000/predict_url/?url=https://media-cdn.tripadvisor.com/media/photo-s/17/ba/a6/31/burger.jpg`
+`http://0.0.0.0:5000/predict?url=https://media-cdn.tripadvisor.com/media/photo-s/17/ba/a6/31/burger.jpg`
+
+or through base64 encoding:
+`http://0.0.0.0:5000/predict?image_b64=<base_64_enconding>`
+
 or you can pass a local file:
 ```bash
-curl -X POST -F "file=@/path/to/file" http://localhost:5000/predict/
+curl -X POST -F "file=@/path/to/file" http://localhost:5000/predict
 ```
 
 ## Links

@@ -1,13 +1,11 @@
-from darkflow.net.build import TFNet
 import cv2
 import base64
 import urllib.request
-
 import numpy as np
-
 import os
 
-from flask import Flask, request, flash, redirect, url_for
+from darkflow.net.build import TFNet
+from flask import Flask, request, url_for
 
 from werkzeug.utils import secure_filename
 
@@ -23,8 +21,7 @@ options = {"model": "/data/yolov2-food100.cfg", "load": "/data/yolov2-food100.we
 tfnet = TFNet(options)
 
 
-@app.route("/predict")
-def predict():
+def get_logic(request):
     if "image_b64" in request.args:
         image_b64 = request.args.get("image_b64")
         nparr = np.fromstring(base64.b64decode(image_b64), np.uint8)
@@ -51,26 +48,36 @@ def allowed_file(filename):
            filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route("/predict/", methods=["POST"])
-def post_logic():
+def post_logic(request):
     # check if the post request has the file part
     if "file" not in request.files:
-        flash("No file part")
-        return redirect(request.url)
+        return "Error: no file part", 400
 
     file = request.files["file"]
 
     # if user does not select file, browser also
     # submit an empty part without filename
     if file.filename == "":
-        flash("No selected file")
-        return redirect(request.url)
+        return "Error: no selected file", 400
+
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
         imgcv = cv2.imread(os.path.join(app.config["UPLOAD_FOLDER"], filename))
         result = tfnet.return_predict(imgcv)
         return str(result)
+
+
+@app.route("/predict", methods=["GET", "POST"])
+def predict():
+    if request.method == "GET":
+        return get_logic(request)
+
+    elif request.method == "POST":
+        return post_logic(request)
+
+    else:
+        return "Not allowed", 400
 
 
 if __name__ == "__main__":

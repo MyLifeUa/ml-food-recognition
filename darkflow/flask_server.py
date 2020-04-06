@@ -26,7 +26,6 @@ tfnet = TFNet(options)
 
 @app.route('/predict', methods=["GET", "POST"])
 def predict():
-
     if request.method == "POST":
         return post_logic(request)
 
@@ -60,30 +59,30 @@ def get_logic(request):
 
 
 def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return "." in filename and \
+           filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def post_logic():
     # check if the post request has the file part
-    if 'file' not in request.files:
-        flash('No file part')
+    if "file" not in request.files:
+        flash("No file part")
         return redirect(request.url)
 
-    file = request.files['file']
+    file = request.files["file"]
 
     # if user does not select file, browser also
     # submit an empty part without filename
-    if file.filename == '':
-        flash('No selected file')
+    if file.filename == "":
+        flash("No selected file")
         return redirect(request.url)
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        imgcv = cv2.imread(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+        imgcv = cv2.imread(os.path.join(app.config["UPLOAD_FOLDER"], filename))
         result = tfnet.return_predict(imgcv)
         return str(result)
 
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0")

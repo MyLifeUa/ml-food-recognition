@@ -7,16 +7,15 @@ import numpy as np
 
 import os
 
-from flask import Flask
-from flask import request, flash, redirect, url_for
+from flask import Flask, request, flash, redirect, url_for
 
 from werkzeug.utils import secure_filename
 
-UPLOAD_FOLDER = '/tmp/photos/'
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+UPLOAD_FOLDER = "/tmp/photos/"
+ALLOWED_EXTENSIONS = {"txt", "pdf", "png", "jpg", "jpeg", "gif"}
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 options = {"model": "/data/yolov2-food100.cfg", "load": "/data/yolov2-food100.weights",
            "labels": "/data/food100.names", "threshold": 0.1}

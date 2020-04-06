@@ -24,6 +24,8 @@ WORKDIR /data
 
 RUN pip install -r requirements.txt
 
+RUN mkdir /tmp/photos
+
 EXPOSE 5000
 
 CMD python3 flask_server.py

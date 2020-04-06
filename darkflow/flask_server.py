@@ -24,7 +24,7 @@ options = {"model": "/data/yolov2-food100.cfg", "load": "/data/yolov2-food100.we
 tfnet = TFNet(options)
 
 
-@app.route("/predict", methods=["GET", "POST"])
+@app.route("/predict/", methods=["GET", "POST"])
 def predict():
     if request.method == "POST":
         return post_logic(request)
@@ -63,7 +63,7 @@ def allowed_file(filename):
            filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def post_logic():
+def post_logic(request):
     # check if the post request has the file part
     if "file" not in request.files:
         flash("No file part")

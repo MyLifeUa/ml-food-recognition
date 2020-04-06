@@ -1,4 +1,3 @@
-
 from darkflow.net.build import TFNet
 import cv2
 import base64
@@ -44,15 +43,15 @@ def predict_base64():
         result = tfnet.return_predict(imgcv)
         return str(result)
 
-    elif "url" in request.args:
-        url_path = request.args.get("url")
-        with urllib.request.urlopen(url_path) as url:
-            with open("/tmp/temp.jpg", "wb") as f:
-                f.write(url.read())
-                
-        imgcv = cv2.imread("/tmp/temp.jpg")
-        result = tfnet.return_predict(imgcv)
-        return str(result)
+    #elif "url" in request.args:
+    #    url_path = request.args.get("url")
+    #    with urllib.request.urlopen(url_path) as url:
+    #        with open("/tmp/temp.jpg", "wb") as f:
+    #            f.write(url.read())
+    #            
+    #    imgcv = cv2.imread("/tmp/temp.jpg")
+    #    result = tfnet.return_predict(imgcv)
+    #    return str(result)
 
     else:
         return "Error", 400

@@ -24,7 +24,7 @@ options = {"model": "/data/yolov2-food100.cfg", "load": "/data/yolov2-food100.we
 tfnet = TFNet(options)
 
 
-@app.route('/predict', methods=["GET", "POST"])
+@app.route("/predict", methods=["GET", "POST"])
 def predict():
     if request.method == "POST":
         return post_logic(request)

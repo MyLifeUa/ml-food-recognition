@@ -1,7 +1,7 @@
 
 from darkflow.net.build import TFNet
 import cv2
-
+import base64
 import urllib.request
 
 import numpy as np
@@ -34,6 +34,29 @@ def predict_remote():
     result = tfnet.return_predict(imgcv)
     return str(result)
 
+@app.route('/predict_base64')
+def predict_base64():
+
+    if "image_b64" in request.args:
+        image_b64 = request.args.get("image_b64")
+        nparr = np.fromstring(base64.b64decode(image_b64), np.uint8)
+        imgcv = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        result = tfnet.return_predict(imgcv)
+        return str(result)
+
+    elif "url" in request.args:
+        url_path = request.args.get("url")
+        with urllib.request.urlopen(url_path) as url:
+            with open("/tmp/temp.jpg", "wb") as f:
+                f.write(url.read())
+                
+        imgcv = cv2.imread("/tmp/temp.jpg")
+        result = tfnet.return_predict(imgcv)
+        return str(result)
+
+    else:
+        return "Error", 400
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -57,17 +80,6 @@ def predict_file():
             imgcv = cv2.imread(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             result = tfnet.return_predict(imgcv)
             return str(result)
-
-
-# @app.route('/predict/')
-# def predict_base64():
-#     img_str = request.args.get('img')
-#     np_arr = np.fromstring(img_str, np.uint8)
-#     imgcv = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
-#     print(type(imgcv))
-#     result = tfnet.return_predict(imgcv)
-#     return str(result)
-#     return 'hello ' + str(type(imgcv))
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')

@@ -23,19 +23,8 @@ options = {"model": "/data/yolov2-food100.cfg", "load": "/data/yolov2-food100.we
 tfnet = TFNet(options)
 
 
-@app.route("/predict/", methods=["GET", "POST"])
+@app.route("/predict")
 def predict():
-    if request.method == "POST":
-        return post_logic(request)
-
-    elif request.method == "GET":
-        return get_logic(request)
-
-    else:
-        return "Error", 400
-
-
-def get_logic(request):
     if "image_b64" in request.args:
         image_b64 = request.args.get("image_b64")
         nparr = np.fromstring(base64.b64decode(image_b64), np.uint8)
@@ -62,7 +51,8 @@ def allowed_file(filename):
            filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def post_logic(request):
+@app.route("/predict/", methods=["POST"])
+def post_logic():
     # check if the post request has the file part
     if "file" not in request.files:
         flash("No file part")

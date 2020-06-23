@@ -15,8 +15,8 @@ ALLOWED_EXTENSIONS = {"txt", "pdf", "png", "jpg", "jpeg", "gif"}
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-options = {"model": "/data/yolov2-food100.cfg", "load": "/data/yolov2-food100.weights",
-           "labels": "/data/food100.names", "threshold": 0.1}
+options = {"model": "/yolov2-food100.cfg", "load": "/yolov2-food100.weights",
+           "labels": "/food100.names", "threshold": 0.1}
 
 tfnet = TFNet(options)
 
